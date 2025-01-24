@@ -21,7 +21,20 @@ export class TodoService {
 
     return newTodo;
 
+  }
 
+  async findUserTodos() {
+    const userId = await this.userHelper.getUserId();
+
+    const todos = await this.prisma.todo.findMany({
+      where: {
+        userId
+      }
+    }).then(todos => todos).catch(err => {
+      throw new BadRequestException(err.message);
+    })
+
+    return todos;
   }
 
 }
