@@ -50,4 +50,18 @@ export class TodoService {
 
   }
 
+  async deleteTodo({ id }: UpdateTodoDto) {
+    const deleted = await this.prisma.todo.delete({
+      where: { id }
+    }).then(todo => {
+      return {
+        message: `Todo with title ${todo.title} has been deleted`
+      }
+    }).catch(err => {
+      throw new BadRequestException(err.message);
+    })
+
+    return deleted;
+  }
+
 }

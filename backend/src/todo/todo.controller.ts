@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Query } from '@nestjs/common';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { TodoService } from './todo.service';
 import { UpdateTodoDto } from './dto/update-todo.dto';
@@ -21,6 +21,12 @@ export class TodoController {
   @Patch()
   update(@Body() updateTodoDto: UpdateTodoDto) {
     return this.todoService.updateTodo(updateTodoDto);
+  }
+
+
+  @Delete()
+  delete(@Query() updateTodoDto: UpdateTodoDto) {
+    return this.todoService.deleteTodo(updateTodoDto);
   }
 
 }
