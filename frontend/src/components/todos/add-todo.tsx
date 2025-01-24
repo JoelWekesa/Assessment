@@ -18,12 +18,14 @@ const validationSchema = z.object({
 const AddTodo: FC<{token: string}> = ({token}) => {
 	const form = useForm<z.infer<typeof validationSchema>>({
 		resolver: zodResolver(validationSchema),
+		defaultValues: {title: ''},
 	});
 
 	const {mutate, isPending} = useAddTodo();
 
 	const handleSubmit = (data: z.infer<typeof validationSchema>) => {
 		mutate({auth: {token}, data});
+		form.reset();
 	};
 
 	return (

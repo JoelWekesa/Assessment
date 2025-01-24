@@ -1,13 +1,14 @@
 'use client';
 import {Todo} from '@/models/todo';
 import useTodos from '@/services/get-todos';
-import {Pen, Trash2} from 'lucide-react';
+import {Loader2, Pen, Trash2} from 'lucide-react';
 import {FC, useState} from 'react';
 import Loading from '../shared/loading';
 import {Button} from '../ui/button';
 import {Card, CardFooter, CardHeader, CardTitle} from '../ui/card';
 import {Checkbox} from '../ui/checkbox';
 import useUpdateTodo from '@/services/update';
+import useDeleteTodo from '@/services/delete-todo';
 
 const ListTodos: FC<{token: string}> = ({token}) => {
 	const {data: todos = [], isLoading} = useTodos({token});
@@ -30,11 +31,17 @@ const ListTodos: FC<{token: string}> = ({token}) => {
 const TodoComponent: FC<{todo: Todo; token: string}> = ({todo, token}) => {
 	const [complete, setComplete] = useState(todo.completed);
 
-	const {mutate, isPending} = useUpdateTodo();
+	const {mutate: update, isPending} = useUpdateTodo();
+
+	const {mutate: remove, isPending: isDeleting} = useDeleteTodo();
 
 	const toggleCheck = () => {
-		mutate({auth: {token}, data: {title: todo.title, id: todo.id, completed: !complete}});
+		update({auth: {token}, data: {title: todo.title, id: todo.id, completed: !complete}});
 		setComplete((complete) => !complete);
+	};
+
+	const deleteTodo = () => {
+		remove({token, id: todo.id});
 	};
 
 	return (
@@ -58,8 +65,8 @@ const TodoComponent: FC<{todo: Todo; token: string}> = ({todo, token}) => {
 				<Button variant='outline' size='icon'>
 					<Pen />
 				</Button>
-				<Button variant='destructive' size='icon'>
-					<Trash2 />
+				<Button variant='destructive' size='icon' onClick={deleteTodo}>
+					{isDeleting ? <Loader2 className='animate-spin' /> : <Trash2 />}
 				</Button>
 			</CardFooter>
 		</Card>
