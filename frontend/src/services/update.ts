@@ -27,8 +27,8 @@ const useUpdateTodo = () => {
     return useMutation({
         mutationFn: updateTodo,
 
-        onSuccess: () => {
-            queryClient.invalidateQueries({
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({
                 queryKey: ['todos']
             })
         }

@@ -2,13 +2,30 @@
 import {Todo} from '@/models/todo';
 import useTodos from '@/services/get-todos';
 import {Loader2, Pen, Trash2} from 'lucide-react';
-import {FC, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import Loading from '../shared/loading';
 import {Button} from '../ui/button';
 import {Card, CardFooter, CardHeader, CardTitle} from '../ui/card';
 import {Checkbox} from '../ui/checkbox';
 import useUpdateTodo from '@/services/update';
 import useDeleteTodo from '@/services/delete-todo';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from '../ui/dialog';
+import {useForm} from 'react-hook-form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {validationSchema} from './add-todo';
+import {z} from 'zod';
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '../ui/form';
+import {Input} from '../ui/input';
+import {DialogClose} from '@radix-ui/react-dialog';
+import useTodo from '@/services/get-todo';
 
 const ListTodos: FC<{token: string}> = ({token}) => {
 	const {data: todos = [], isLoading} = useTodos({token});
@@ -29,20 +46,45 @@ const ListTodos: FC<{token: string}> = ({token}) => {
 };
 
 const TodoComponent: FC<{todo: Todo; token: string}> = ({todo, token}) => {
-	const [complete, setComplete] = useState(todo.completed);
+	const {data} = useTodo({todo, auth: {token}});
+
+	console.log({data});
+
+	const [open, setOpen] = useState(false);
+
+	const toggleOpen = () => {
+		setOpen((open) => !open);
+	};
+
+	const form = useForm<z.infer<typeof validationSchema>>({
+		resolver: zodResolver(validationSchema),
+		defaultValues: {title: data.title},
+	});
+
+	const [complete, setComplete] = useState(data.completed);
 
 	const {mutate: update, isPending} = useUpdateTodo();
 
 	const {mutate: remove, isPending: isDeleting} = useDeleteTodo();
 
 	const toggleCheck = () => {
-		update({auth: {token}, data: {title: todo.title, id: todo.id, completed: !complete}});
+		update({auth: {token}, data: {title: data.title, id: data.id, completed: !complete}});
 		setComplete((complete) => !complete);
 	};
 
-	const deleteTodo = () => {
-		remove({token, id: todo.id});
+	const updateTodo = (data: z.infer<typeof validationSchema>) => {
+		update({auth: {token}, data: {title: data.title, id: todo.id, completed: complete}});
+		form.reset();
+		toggleOpen();
 	};
+
+	const deleteTodo = () => {
+		remove({token, id: data.id});
+	};
+
+	useEffect(() => {
+		form.reset({title: data.title});
+	}, [data, form]);
 
 	return (
 		<Card className='w-full p-2'>
@@ -62,9 +104,46 @@ const TodoComponent: FC<{todo: Todo; token: string}> = ({todo, token}) => {
 				</CardTitle>
 			</CardHeader>
 			<CardFooter className='flex mr-auto justify-end gap-2'>
-				<Button variant='outline' size='icon'>
-					<Pen />
-				</Button>
+				<Dialog open={open} onOpenChange={toggleOpen}>
+					<DialogTrigger asChild>
+						<Button variant='outline' size='icon'>
+							<Pen />
+						</Button>
+					</DialogTrigger>
+					<DialogContent className='sm:max-w-[425px] w-full max-w-xs p-4 sm:p-6 rounded-lg sm:rounded-xl bg-white shadow-lg overflow-y-auto sm:max-h-[90vh]'>
+						<DialogHeader>
+							<DialogTitle>Edit Todo</DialogTitle>
+							<DialogDescription>Update your to stay organized and track your progress.</DialogDescription>
+						</DialogHeader>
+						<Form {...form}>
+							<form className='flex flex-col gap-2 p-2' onSubmit={form.handleSubmit(updateTodo)}>
+								<FormField
+									control={form.control}
+									name='title'
+									render={({field}) => (
+										<FormItem>
+											<FormLabel>Title</FormLabel>
+											<FormControl>
+												<Input placeholder='Enter your todo title' id='title' {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<DialogFooter>
+									<DialogClose asChild>
+										<Button type='button' variant='secondary'>
+											Cancel
+										</Button>
+									</DialogClose>
+									<Button type='submit'>Save changes</Button>
+								</DialogFooter>
+							</form>
+						</Form>
+					</DialogContent>
+				</Dialog>
+
 				<Button variant='destructive' size='icon' onClick={deleteTodo}>
 					{isDeleting ? <Loader2 className='animate-spin' /> : <Trash2 />}
 				</Button>

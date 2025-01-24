@@ -11,7 +11,7 @@ import {Button} from '../ui/button';
 import useAddTodo from '@/services/add-todo';
 import {Loader2} from 'lucide-react';
 
-const validationSchema = z.object({
+export const validationSchema = z.object({
 	title: z.string({message: 'Title is required'}).min(3, {message: 'Title must be at least 3 characters'}),
 });
 
