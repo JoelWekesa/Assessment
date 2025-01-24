@@ -1,26 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
-import { UpdateTodoDto } from './dto/update-todo.dto';
+import { UserHelper } from './user.helper';
 
 @Injectable()
 export class TodoService {
-  create(createTodoDto: CreateTodoDto) {
-    return 'This action adds a new todo';
+  constructor(private readonly prisma: PrismaService, private readonly userHelper: UserHelper) { }
+  async create(createTodoDto: CreateTodoDto) {
+    const { title } = createTodoDto;
+    const userId = await this.userHelper.getUserId();
+
+    const newTodo = await this.prisma.todo.create({
+      data: {
+        title,
+        userId
+      }
+    }).then(todo => todo).catch(err => {
+      throw new BadRequestException(err.message);
+    })
+
+    return newTodo;
+
+
   }
 
-  findAll() {
-    return `This action returns all todo`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} todo`;
-  }
-
-  update(id: number, updateTodoDto: UpdateTodoDto) {
-    return `This action updates a #${id} todo`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} todo`;
-  }
 }
