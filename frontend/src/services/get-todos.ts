@@ -1,4 +1,5 @@
 import ApiClient from "@/config/axios"
+import { Todo } from "@/models/todo"
 import { useQuery } from "@tanstack/react-query"
 
 export interface Auth {
@@ -11,7 +12,7 @@ const getTodos = async ({ token }: Auth) => {
 
     const instance = await ApiClient(token)
 
-    const todos = await instance.get(url).then(res => res.data)
+    const todos: Todo[] = await instance.get(url).then(res => res.data)
 
     return todos
 
