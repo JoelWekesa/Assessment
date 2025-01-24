@@ -30,7 +30,16 @@ export class TodoService {
     const todos = await this.prisma.todo.findMany({
       where: {
         userId
-      }
+      },
+
+      orderBy: [
+        {
+          completed: 'asc'
+        },
+        {
+          updatedAt: 'desc'
+        }
+      ]
     }).then(todos => todos).catch(err => {
       throw new BadRequestException(err.message);
     })
