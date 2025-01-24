@@ -48,8 +48,6 @@ const ListTodos: FC<{token: string}> = ({token}) => {
 const TodoComponent: FC<{todo: Todo; token: string}> = ({todo, token}) => {
 	const {data} = useTodo({todo, auth: {token}});
 
-	console.log({data});
-
 	const [open, setOpen] = useState(false);
 
 	const toggleOpen = () => {
@@ -63,7 +61,7 @@ const TodoComponent: FC<{todo: Todo; token: string}> = ({todo, token}) => {
 
 	const [complete, setComplete] = useState(data.completed);
 
-	const {mutate: update, isPending} = useUpdateTodo();
+	const {mutate: update} = useUpdateTodo();
 
 	const {mutate: remove, isPending: isDeleting} = useDeleteTodo();
 
@@ -97,7 +95,7 @@ const TodoComponent: FC<{todo: Todo; token: string}> = ({todo, token}) => {
 							<label
 								htmlFor='todo'
 								className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
-								{isPending ? 'Updating...' : todo.completed ? 'Completed' : 'Mark as complete'}
+								{todo.completed ? 'Completed' : 'Mark as complete'}
 							</label>
 						</div>
 					</div>

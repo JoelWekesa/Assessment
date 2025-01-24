@@ -4,8 +4,6 @@ import axios from 'axios';
 const ApiClient = (token: string) => {
     const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
-    console.log(baseURL)
-
 
     const defaultOptions = {
         baseURL,
@@ -26,11 +24,6 @@ const ApiClient = (token: string) => {
         (response) => {
             return response;
         },
-        (error) => {
-
-            console.log(error)
-
-        }
     );
 
     return instance;
