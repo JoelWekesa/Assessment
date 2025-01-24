@@ -17,6 +17,11 @@ export class TodoController {
     return this.todoService.findUserTodos();
   }
 
+  @Get()
+  getTodo(@Query() query: UpdateTodoDto) {
+    return this.todoService.getTodo(query);
+  }
+
 
   @Patch()
   update(@Body() updateTodoDto: UpdateTodoDto) {

@@ -73,4 +73,15 @@ export class TodoService {
     return deleted;
   }
 
+
+  async getTodo({ id }: UpdateTodoDto) {
+    const todo = await this.prisma.todo.findUnique({
+      where: { id }
+    }).then(todo => todo).catch(err => {
+      throw new BadRequestException(err.message);
+    })
+
+    return todo;
+  }
+
 }
