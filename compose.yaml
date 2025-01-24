@@ -1,0 +1,8 @@
+services:
+ web:
+  build:
+   context: ./frontend
+  env_file:
+   - ./frontend/.env.local
+  ports:
+   - 3001:3001
