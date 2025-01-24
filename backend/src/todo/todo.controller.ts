@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { TodoService } from './todo.service';
+import { UpdateTodoDto } from './dto/update-todo.dto';
 
 @Controller('todo')
 export class TodoController {
@@ -15,4 +16,11 @@ export class TodoController {
   findUserTodos() {
     return this.todoService.findUserTodos();
   }
+
+
+  @Patch()
+  update(@Body() updateTodoDto: UpdateTodoDto) {
+    return this.todoService.updateTodo(updateTodoDto);
+  }
+
 }

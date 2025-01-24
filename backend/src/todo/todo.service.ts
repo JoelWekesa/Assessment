@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UserHelper } from './user.helper';
+import { UpdateTodoDto } from './dto/update-todo.dto';
 
 @Injectable()
 export class TodoService {
@@ -35,6 +36,18 @@ export class TodoService {
     })
 
     return todos;
+  }
+
+  async updateTodo({ id, ...data }: UpdateTodoDto) {
+    const updated = await this.prisma.todo.update({
+      where: { id },
+      data
+    }).then(todo => todo).catch(err => {
+      throw new BadRequestException(err.message);
+    })
+
+    return updated;
+
   }
 
 }
