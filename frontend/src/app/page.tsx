@@ -1,6 +1,5 @@
-import ListTodos from '@/components/todos/list-todos';
+import TodosComponent from '@/components/todos';
 import {cookies} from 'next/headers';
-import React from 'react';
 
 const Home = async () => {
 	let token: string | undefined;
@@ -30,11 +29,7 @@ const Home = async () => {
 		token = await fetchData();
 	}
 
-	return (
-		<div className='flex flex-col gap-2'>
-			<ListTodos token={token || ''} />
-		</div>
-	);
+	return <TodosComponent token={token || ''} />;
 };
 
 export default Home;

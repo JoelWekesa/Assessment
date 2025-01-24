@@ -3,6 +3,10 @@ import axios from 'axios';
 
 const ApiClient = (token: string) => {
     const baseURL = process.env.NEXT_PUBLIC_API_URL;
+
+    console.log(baseURL)
+
+
     const defaultOptions = {
         baseURL,
         timeout: 150000,
