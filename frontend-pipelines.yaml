@@ -1,0 +1,75 @@
+trigger:
+ branches:
+  include:
+   - frontend
+
+resources:
+ - repo: self
+
+variables:
+ tag: '$(Build.BuildId)'
+
+ PORT: 3001
+
+stages:
+ - stage: Build
+   displayName: Build image
+   jobs:
+    - job: Build
+      displayName: Build
+      pool:
+       vmImage: ubuntu-latest
+      steps:
+       - task: Bash@3
+         displayName: Create an .env file
+         inputs:
+          targetType: 'inline'
+          script: |
+           cat <<EOT > .env
+           NEXT_PUBLIC_API_URL=$(NEXT_PUBLIC_API_URL)
+           NEXT_PUBLIC_APP_URL=$(NEXT_PUBLIC_APP_URL)
+
+           EOT
+
+       - script: |
+          echo "Building Docker image with tag: $(tag)"
+          docker build --build-arg PORT=$(PORT) -f frontend/Dockerfile -t joelwekesa/frontend:$(tag) ./frontend
+         displayName: Build Docker Image
+         env:
+          DOCKER_BUILDKIT: 1
+
+       - task: Docker@2
+         inputs:
+          containerRegistry: 'docker'
+          repository: 'joelwekesa/frontend'
+          command: 'push'
+          tags: '$(tag)'
+
+       # Check the Docker image after build
+       - script: |
+          echo "Docker images list:"
+          docker images
+         displayName: List Docker Images
+
+ - stage: DeployToEC2Frontend
+   displayName: Deploy Frontend to EC2 Instance
+   jobs:
+    - job: DeployFrontendContainer
+      displayName: Deploy Frontend Container to EC2
+      pool:
+       vmImage: ubuntu-latest
+      steps:
+       - task: SSH@0
+         inputs:
+          sshEndpoint: 'SIL'
+          runOptions: 'commands'
+          commands: |
+           echo "Pulling Docker image for frontend: joelwekesa/frontend:$(tag)"
+           docker pull joelwekesa/frontend:$(tag)
+           docker stop frontend 2>/dev/null || true
+           docker rm frontend 2>/dev/null || true
+           docker network inspect app_network >/dev/null 2>&1 || docker network create app_network
+           echo "Running Docker container for frontend"
+           docker run -d --name frontend --network app_network -e NEXT_PUBLIC_API_URL=$(NEXT_PUBLIC_API_URL) -e NEXT_PUBLIC_APP_URL=$(NEXT_PUBLIC_APP_URL) -p "$(PORT)":3001 joelwekesa/frontend:$(tag)
+         displayName: Deploy Frontend Container
+         timeoutInMinutes: 20
