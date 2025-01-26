@@ -3,10 +3,11 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UserHelper } from './user.helper';
 import { UpdateTodoDto } from './dto/update-todo.dto';
+import { MetricsService } from 'src/metrics/metrics.service';
 
 @Injectable()
 export class TodoService {
-  constructor(private readonly prisma: PrismaService, private readonly userHelper: UserHelper) { }
+  constructor(private readonly prisma: PrismaService, private readonly userHelper: UserHelper, private readonly metricsService: MetricsService) { }
   async create(createTodoDto: CreateTodoDto) {
     const { title } = createTodoDto;
     const userId = await this.userHelper.getUserId();
@@ -16,7 +17,11 @@ export class TodoService {
         title,
         userId
       }
-    }).then(todo => todo).catch(err => {
+    }).then((todo) => {
+      this.metricsService.recordSuccess();
+      return todo;
+    }).catch(err => {
+      this.metricsService.recordFailure();
       throw new BadRequestException(err.message);
     })
 
@@ -40,7 +45,11 @@ export class TodoService {
           updatedAt: 'desc'
         }
       ]
-    }).then(todos => todos).catch(err => {
+    }).then(todos => {
+      this.metricsService.recordSuccess();
+      return todos;
+    }).catch(err => {
+      this.metricsService.recordFailure();
       throw new BadRequestException(err.message);
     })
 
@@ -51,7 +60,11 @@ export class TodoService {
     const updated = await this.prisma.todo.update({
       where: { id },
       data
-    }).then(todo => todo).catch(err => {
+    }).then(todo => {
+      this.metricsService.recordSuccess();
+      return todo;
+    }).catch(err => {
+      this.metricsService.recordFailure();
       throw new BadRequestException(err.message);
     })
 
@@ -63,10 +76,12 @@ export class TodoService {
     const deleted = await this.prisma.todo.delete({
       where: { id }
     }).then(todo => {
+      this.metricsService.recordSuccess();
       return {
         message: `Todo with title ${todo.title} has been deleted`
       }
     }).catch(err => {
+      this.metricsService.recordFailure();
       throw new BadRequestException(err.message);
     })
 
@@ -77,7 +92,11 @@ export class TodoService {
   async getTodo({ id }: UpdateTodoDto) {
     const todo = await this.prisma.todo.findUnique({
       where: { id }
-    }).then(todo => todo).catch(err => {
+    }).then(todo => {
+      this.metricsService.recordSuccess();
+      return todo
+    }).catch(err => {
+      this.metricsService.recordFailure();
       throw new BadRequestException(err.message);
     })
 

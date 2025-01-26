@@ -25,5 +25,7 @@ RUN pnpm build
 
 COPY . .
 
+EXPOSE 5001
+
 
 CMD ["pnpm", "start:migrate:prod"]
