@@ -59,7 +59,6 @@ const Home = async () => {
 
 	return (
 		<>
-			{JSON.stringify(process.env.NEXT_PUBLIC_API_URL)}
 			<TodosComponent token={token || ''} />
 		</>
 	);
