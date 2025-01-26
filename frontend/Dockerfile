@@ -1,6 +1,7 @@
 FROM --platform=linux/amd64 node:20-slim as base
 
 ARG PORT=3001
+ENV PORT=$PORT
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -9,13 +10,9 @@ RUN corepack enable
 ENV BUILD_STANDALONE=true
 
 
-
 FROM base AS deps
 
 WORKDIR /frontend
-
-RUN rm -rf node_modules
-RUN rm -rf yarn.lock
 
 
 COPY package.json pnpm-lock.yaml* ./
@@ -53,8 +50,6 @@ COPY --from=builder --chown=nextjs:nodejs /frontend/.next/static ./.next/static
 USER nextjs
 
 EXPOSE $PORT
-
-ENV PORT=$PORT
 
 
 CMD ["node", "server.js"]

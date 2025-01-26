@@ -46,7 +46,7 @@ const ListTodos: FC<{token: string}> = ({token}) => {
 };
 
 const TodoComponent: FC<{todo: Todo; token: string}> = ({todo, token}) => {
-	const {data} = useTodo({todo, auth: {token}});
+	const {data, isLoading} = useTodo({todo, auth: {token}});
 
 	const [open, setOpen] = useState(false);
 
@@ -89,7 +89,9 @@ const TodoComponent: FC<{todo: Todo; token: string}> = ({todo, token}) => {
 			<CardHeader>
 				<CardTitle>
 					<div className='flex flex-row justify-between'>
-						<span className={`${todo.completed && 'text-decoration: line-through'}`}>{todo.title}</span>
+						<span className={`${todo.completed && !isLoading && 'text-decoration: line-through'}`}>
+							{isLoading ? 'Loading...' : todo.title}
+						</span>
 						<div className='flex items-center space-x-2'>
 							<Checkbox id='todo' checked={complete} onCheckedChange={toggleCheck} />
 							<label

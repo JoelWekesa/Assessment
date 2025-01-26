@@ -45,16 +45,16 @@ stages:
       pool:
        vmImage: ubuntu-latest
       steps:
-       - task: Bash@3
-         displayName: Create Frontend .env File
-         inputs:
-          targetType: 'inline'
-          script: |
-           cat <<EOT > .env
-           NEXT_PUBLIC_API_URL=$(NEXT_PUBLIC_API_URL)
-           NEXT_PUBLIC_APP_URL=$(NEXT_PUBLIC_APP_URL)
+      #  - task: Bash@3
+      #    displayName: Create Frontend .env File
+      #    inputs:
+      #     targetType: 'inline'
+      #     script: |
+      #      cat <<EOT > .env
+      #      NEXT_PUBLIC_API_URL=$(NEXT_PUBLIC_API_URL)
+      #      NEXT_PUBLIC_APP_URL=$(NEXT_PUBLIC_APP_URL)
 
-           EOT
+      #      EOT
 
        - script: |
           echo "Building Docker image for frontend with tag: $(tag)"
