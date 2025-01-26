@@ -106,12 +106,12 @@ stages:
            docker rm frontend 2>/dev/null || true
            docker network inspect app_network >/dev/null 2>&1 || docker network create app_network
            echo "Running Docker container for frontend"
-           docker run -d --name frontend --network app_network \
-             -e NEXT_PUBLIC_API_URL=$(NEXT_PUBLIC_API_URL) \
-             -e NEXT_PUBLIC_APP_URL=$(NEXT_PUBLIC_APP_URL) \
-             -e OTEL_SERVICE_NAME=$(OTEL_SERVICE_NAME) \
-             -e OTEL_LOG_LEVEL=$(OTEL_LOG_LEVEL) \
-             -e NEXT_PUBLIC_VERCEL_ENV=$(NEXT_PUBLIC_VERCEL_ENV) \
+           docker run -d --name frontend --network app_network 
+             -e NEXT_PUBLIC_API_URL=$(NEXT_PUBLIC_API_URL) 
+             -e NEXT_PUBLIC_APP_URL=$(NEXT_PUBLIC_APP_URL) 
+             -e OTEL_SERVICE_NAME=$(OTEL_SERVICE_NAME) 
+             -e OTEL_LOG_LEVEL=$(OTEL_LOG_LEVEL) 
+             -e NEXT_PUBLIC_VERCEL_ENV=$(NEXT_PUBLIC_VERCEL_ENV) 
              -p 3001:3001 joelwekesa/frontend:$(tag)
          displayName: Deploy Frontend Container
          timeoutInMinutes: 20
