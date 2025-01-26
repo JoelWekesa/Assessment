@@ -49,7 +49,11 @@ const Home = async () => {
 			console.log(res.data);
 		})
 		.catch((err) => {
-			console.error(err);
+			console.error({
+				error: err,
+				message: 'Failed to fetch data',
+				
+			});
 		});
 
 	return (
