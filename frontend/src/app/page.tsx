@@ -2,6 +2,8 @@ import TodosComponent from '@/components/todos';
 import ApiClient from '@/config/axios';
 import {cookies} from 'next/headers';
 
+export const dynamic = 'force-dynamic';
+
 const Home = async () => {
 	let token: string | undefined;
 
@@ -52,7 +54,6 @@ const Home = async () => {
 			console.error({
 				error: err,
 				message: 'Failed to fetch data',
-				
 			});
 		});
 
