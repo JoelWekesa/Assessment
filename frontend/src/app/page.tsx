@@ -9,7 +9,7 @@ const Home = async () => {
 	token = await cookieStore.get('sil-token')?.value;
 
 	const fetchData = async () => {
-		const url = process.env.NEXT_PUBLIC_APP_URL + 'api/auth';
+		const url = process.env.NEXT_PUBLIC_APP_URL + '/api/auth';
 
 		try {
 			const response = await fetch(url, {
@@ -25,9 +25,22 @@ const Home = async () => {
 		}
 	};
 
+	const fetchMetrics = async () => {
+		const url = process.env.NEXT_PUBLIC_APP_URL + '/api/metrics/pagevisits';
+		try {
+			await fetch(url, {
+				method: 'GET',
+			});
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	if (!token) {
 		token = await fetchData();
 	}
+
+	await fetchMetrics();
 
 	return <TodosComponent token={token || ''} />;
 };
