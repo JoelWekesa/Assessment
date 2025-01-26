@@ -42,7 +42,12 @@ const Home = async () => {
 
 	await fetchMetrics();
 
-	return <TodosComponent token={token || ''} />;
+	return (
+		<>
+			{JSON.stringify(process.env.NEXT_PUBLIC_API_URL)}
+			<TodosComponent token={token || ''} />
+		</>
+	);
 };
 
 export default Home;
