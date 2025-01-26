@@ -1,7 +1,5 @@
 trigger:
- branches:
-  include:
-   - backend
+ - backend
 
 resources:
  - repo: self
