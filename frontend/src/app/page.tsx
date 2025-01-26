@@ -1,4 +1,5 @@
 import TodosComponent from '@/components/todos';
+import ApiClient from '@/config/axios';
 import {cookies} from 'next/headers';
 
 const Home = async () => {
@@ -41,6 +42,15 @@ const Home = async () => {
 	}
 
 	await fetchMetrics();
+
+	await ApiClient(token || '')
+		.get('/todo/user')
+		.then((res) => {
+			console.log(res.data);
+		})
+		.catch((err) => {
+			console.error(err);
+		});
 
 	return (
 		<>

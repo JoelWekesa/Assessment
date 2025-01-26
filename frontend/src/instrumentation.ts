@@ -19,7 +19,7 @@ export async function register() {
         const pinoLoki = (await import('pino-loki')).default;
 
         const transport = pinoLoki({
-            host: 'http://localhost:3100',
+            host: process.env.PINO_LOKI_URL || 'http://localhost:3100',
             batching: true,
             interval: 5,
             labels: { app: 'frontend' },
