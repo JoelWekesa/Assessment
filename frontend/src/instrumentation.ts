@@ -2,6 +2,7 @@
 import type { Logger } from 'pino';
 import { Registry, collectDefaultMetrics, Counter } from 'prom-client';
 import { registerOTel } from '@vercel/otel'
+import { config } from './config/config';
 
 declare global {
     var logger: Logger | undefined
@@ -19,7 +20,7 @@ export async function register() {
         const pinoLoki = (await import('pino-loki')).default;
 
         const transport = pinoLoki({
-            host: process.env.PINO_LOKI_URL || 'http://localhost:3100',
+            host: config.pinoLokiURL,
             batching: true,
             interval: 5,
             labels: { app: 'frontend' },

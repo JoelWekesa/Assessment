@@ -1,4 +1,5 @@
 import TodosComponent from '@/components/todos';
+import {config} from '@/config/config';
 import {cookies} from 'next/headers';
 
 const Home = async () => {
@@ -9,7 +10,7 @@ const Home = async () => {
 	token = await cookieStore.get('sil-token')?.value;
 
 	const fetchData = async () => {
-		const url = process.env.NEXT_PUBLIC_APP_URL + '/api/auth';
+		const url = config.appURL + '/api/auth';
 
 		try {
 			const response = await fetch(url, {
@@ -26,7 +27,7 @@ const Home = async () => {
 	};
 
 	const fetchMetrics = async () => {
-		const url = process.env.NEXT_PUBLIC_APP_URL + '/api/metrics/pagevisits';
+		const url = config.appURL + '/api/metrics/pagevisits';
 		try {
 			await fetch(url, {
 				method: 'GET',

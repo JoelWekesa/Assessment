@@ -7,10 +7,10 @@ interface Add {
 }
 
 
-const addTodo = async ({ data, auth: { token, baseURL } }: { data: Add, auth: Auth }) => {
+const addTodo = async ({ data, auth: { token } }: { data: Add, auth: Auth }) => {
     const url = 'todo'
 
-    const instance = await ApiClient({ token, baseURL })
+    const instance = await ApiClient({ token, })
 
     const todo = await instance.post(url, data).then(res => res.data)
 

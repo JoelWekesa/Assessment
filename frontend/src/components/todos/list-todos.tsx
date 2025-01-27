@@ -28,7 +28,7 @@ import {DialogClose} from '@radix-ui/react-dialog';
 import useTodo from '@/services/get-todo';
 
 const ListTodos: FC<{token: string}> = ({token}) => {
-	const {data: todos = [], isLoading} = useTodos({token, baseURL});
+	const {data: todos = [], isLoading} = useTodos({token});
 
 	if (isLoading) {
 		return <Loading />;
@@ -66,18 +66,18 @@ const TodoComponent: FC<{todo: Todo; token: string}> = ({todo, token}) => {
 	const {mutate: remove, isPending: isDeleting} = useDeleteTodo();
 
 	const toggleCheck = () => {
-		update({auth: {token, baseURL}, data: {title: data.title, id: data.id, completed: !complete}});
+		update({auth: {token}, data: {title: data.title, id: data.id, completed: !complete}});
 		setComplete((complete) => !complete);
 	};
 
 	const updateTodo = (data: z.infer<typeof validationSchema>) => {
-		update({auth: {token, baseURL}, data: {title: data.title, id: todo.id, completed: complete}});
+		update({auth: {token}, data: {title: data.title, id: todo.id, completed: complete}});
 		form.reset();
 		toggleOpen();
 	};
 
 	const deleteTodo = () => {
-		remove({token, id: data.id, baseURL});
+		remove({token, id: data.id});
 	};
 
 	useEffect(() => {

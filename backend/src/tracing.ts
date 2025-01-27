@@ -15,7 +15,7 @@ const otelSDK = new NodeSDK({
     }),
     spanProcessor: new BatchSpanProcessor(
         new ZipkinExporter({
-            url: process.env.ZipkinExporterUrl || 'http://localhost:9411/api/v2/spans',
+            url: process.env.ZipkinExporterUrl,
         })
     ),
     contextManager: new AsyncLocalStorageContextManager(),

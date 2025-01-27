@@ -12,11 +12,11 @@ interface Props {
     todo: Todo
 }
 
-const getTodos = async ({ auth: { token, baseURL }, todo: { id } }: Props) => {
+const getTodos = async ({ auth: { token }, todo: { id } }: Props) => {
 
     const url = `todo?id=${id}`
 
-    const instance = await ApiClient({ token, baseURL })
+    const instance = await ApiClient({ token })
 
     const todos: Todo = await instance.get(url).then(res => res.data)
 

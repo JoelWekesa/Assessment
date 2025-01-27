@@ -1,9 +1,11 @@
 
 import axios from 'axios';
+import { config } from './config';
 
-const ApiClient = ({ token, baseURL }: { token: string, baseURL: string }) => {
+const ApiClient = ({ token }: { token: string }) => {
 
 
+    const { baseURL } = config
 
     const defaultOptions = {
         baseURL,

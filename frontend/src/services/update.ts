@@ -9,10 +9,10 @@ interface Update {
 }
 
 
-const updateTodo = async ({ data, auth: { token, baseURL } }: { data: Update, auth: Auth }) => {
+const updateTodo = async ({ data, auth: { token } }: { data: Update, auth: Auth }) => {
     const url = 'todo'
 
-    const instance = await ApiClient({ token, baseURL })
+    const instance = await ApiClient({ token })
 
     const todo = await instance.patch(url, data).then(res => res.data)
 

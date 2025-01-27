@@ -26,7 +26,7 @@ const AddTodo: FC<{token: string}> = ({token}) => {
 	const {mutate, isPending} = useAddTodo();
 
 	const handleSubmit = (data: z.infer<typeof validationSchema>) => {
-		mutate({auth: {token, baseURL}, data});
+		mutate({auth: {token}, data});
 		form.reset();
 	};
 

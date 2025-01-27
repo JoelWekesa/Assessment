@@ -4,14 +4,13 @@ import { useQuery } from "@tanstack/react-query"
 
 export interface Auth {
     token: string
-    baseURL: string
 }
 
-const getTodos = async ({ token, baseURL }: Auth) => {
+const getTodos = async ({ token }: Auth) => {
 
     const url = 'todo/user'
 
-    const instance = await ApiClient({ token, baseURL })
+    const instance = await ApiClient({ token, })
 
     const todos: Todo[] = await instance.get(url).then(res => res.data)
 
@@ -20,9 +19,9 @@ const getTodos = async ({ token, baseURL }: Auth) => {
 }
 
 
-const useTodos = ({ token, baseURL }: Auth) => useQuery({
+const useTodos = ({ token }: Auth) => useQuery({
     queryKey: ['todos', { token }],
-    queryFn: () => getTodos({ token, baseURL }),
+    queryFn: () => getTodos({ token }),
     enabled: !!token
 })
 
