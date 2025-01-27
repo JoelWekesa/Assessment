@@ -20,7 +20,7 @@ import {
 } from '../ui/dialog';
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {validationSchema} from './add-todo';
+import {baseURL, validationSchema} from './add-todo';
 import {z} from 'zod';
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '../ui/form';
 import {Input} from '../ui/input';
@@ -28,7 +28,7 @@ import {DialogClose} from '@radix-ui/react-dialog';
 import useTodo from '@/services/get-todo';
 
 const ListTodos: FC<{token: string}> = ({token}) => {
-	const {data: todos = [], isLoading} = useTodos({token});
+	const {data: todos = [], isLoading} = useTodos({token, baseURL});
 
 	if (isLoading) {
 		return <Loading />;
@@ -46,7 +46,7 @@ const ListTodos: FC<{token: string}> = ({token}) => {
 };
 
 const TodoComponent: FC<{todo: Todo; token: string}> = ({todo, token}) => {
-	const {data, isLoading} = useTodo({todo, auth: {token}});
+	const {data, isLoading} = useTodo({todo, auth: {token, baseURL}});
 
 	const [open, setOpen] = useState(false);
 
@@ -66,18 +66,18 @@ const TodoComponent: FC<{todo: Todo; token: string}> = ({todo, token}) => {
 	const {mutate: remove, isPending: isDeleting} = useDeleteTodo();
 
 	const toggleCheck = () => {
-		update({auth: {token}, data: {title: data.title, id: data.id, completed: !complete}});
+		update({auth: {token, baseURL}, data: {title: data.title, id: data.id, completed: !complete}});
 		setComplete((complete) => !complete);
 	};
 
 	const updateTodo = (data: z.infer<typeof validationSchema>) => {
-		update({auth: {token}, data: {title: data.title, id: todo.id, completed: complete}});
+		update({auth: {token, baseURL}, data: {title: data.title, id: todo.id, completed: complete}});
 		form.reset();
 		toggleOpen();
 	};
 
 	const deleteTodo = () => {
-		remove({token, id: data.id});
+		remove({token, id: data.id, baseURL});
 	};
 
 	useEffect(() => {

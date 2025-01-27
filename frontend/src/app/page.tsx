@@ -1,7 +1,5 @@
 import TodosComponent from '@/components/todos';
-import ApiClient from '@/config/axios';
 import {cookies} from 'next/headers';
-
 
 const Home = async () => {
 	let token: string | undefined;
@@ -43,18 +41,6 @@ const Home = async () => {
 	}
 
 	await fetchMetrics();
-
-	await ApiClient(token || '')
-		.get('/todo/user')
-		.then((res) => {
-			console.log(res.data);
-		})
-		.catch((err) => {
-			console.error({
-				error: err,
-				message: 'Failed to fetch data',
-			});
-		});
 
 	return (
 		<>

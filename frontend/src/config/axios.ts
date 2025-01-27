@@ -1,8 +1,8 @@
 
 import axios from 'axios';
 
-const ApiClient = (token: string) => {
-    const baseURL = process.env.NEXT_PUBLIC_API_URL;
+const ApiClient = ({ token, baseURL }: { token: string, baseURL: string }) => {
+
 
 
     const defaultOptions = {

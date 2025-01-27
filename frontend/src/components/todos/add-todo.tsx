@@ -11,6 +11,8 @@ import {Button} from '../ui/button';
 import useAddTodo from '@/services/add-todo';
 import {Loader2} from 'lucide-react';
 
+export const baseURL = process.env.NEXT_PUBLIC_API_URL as string;
+
 export const validationSchema = z.object({
 	title: z.string({message: 'Title is required'}).min(3, {message: 'Title must be at least 3 characters'}),
 });
@@ -24,7 +26,7 @@ const AddTodo: FC<{token: string}> = ({token}) => {
 	const {mutate, isPending} = useAddTodo();
 
 	const handleSubmit = (data: z.infer<typeof validationSchema>) => {
-		mutate({auth: {token}, data});
+		mutate({auth: {token, baseURL}, data});
 		form.reset();
 	};
 
